@@ -4,7 +4,7 @@
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Sorvetes • Autoatendimento</title>
 <style>
-*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;color:#392b2b;background:linear-gradient(rgba(255,248,241,.88),rgba(255,248,241,.94)),url('fundo.jpg') center/cover fixed no-repeat;min-height:100vh}
+*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;color:#392b2b;background:linear-gradient(rgba(255,248,241,.55),rgba(255,248,241,.68)),url('fundo.jpg') center/cover fixed no-repeat;min-height:100vh}
 header{padding:28px 5%;background:rgba(255,255,255,.92);backdrop-filter:blur(8px);display:flex;justify-content:space-between;align-items:center;box-shadow:0 2px 14px #0001;position:sticky;top:0;z-index:5}
 .brand{font-size:32px;font-weight:900}.brand span{color:#e84c78}.welcome{font-size:18px;color:#786969}
 main{padding:30px 5% 120px}.hero{background:linear-gradient(120deg,rgba(255,227,235,.94),rgba(255,241,199,.94));box-shadow:0 8px 28px #55332218;padding:30px;border-radius:26px;margin-bottom:25px}
@@ -19,8 +19,8 @@ main{padding:30px 5% 120px}.hero{background:linear-gradient(120deg,rgba(255,227,
 <header><div class="brand">🍦 <span>Sorvetes</span></div><div class="welcome">Totem de autoatendimento</div></header>
 <main>
 <section class="hero"><h1>Qual vai ser o seu hoje? 😋</h1><p>Escolha seus sabores e monte seu pedido.</p></section>
-<div class="tabs"><button class="tab active">Todos</button><button class="tab">Tradicionais</button><button class="tab">Especiais</button><button class="tab">Frutas</button><button class="tab">Picolés</button></div>
-<section class="grid" id="menu"></section>
+<div class="tabs"><button class="tab active">Todos</button><button class="tab">Tradicionais</button><button class="tab">Especiais</button><button class="tab">Frutas</button><button class="tab">Picolés</button><button class="tab">Açaí</button></div>
+<section class="grid" id="menu"></section><section class="hero" style="margin-top:32px;background:rgba(91,35,105,.92);color:white"><h1>💜 Monte seu Açaí</h1><p>Escolha o tamanho e depois seus complementos favoritos.</p></section><section class="grid" id="acai"></section>
 </main>
 <div class="cart"><div><strong>Seu pedido <span class="badge" id="qty">0</span></strong><div id="total">Total: R$ 0,00</div></div><button class="checkout" onclick="alert('Próxima etapa: tela do carrinho')">Ver pedido →</button></div>
 <script>
@@ -32,4 +32,8 @@ const items=[
 ];let qtd=0,total=0;
 const menu=document.getElementById('menu');
 items.forEach(i=>{const c=document.createElement('article');c.className='card';c.innerHTML='<div class="pic">'+i[2]+'</div><h2>'+i[0]+'</h2><div class="desc">'+i[1]+'</div><div class="bottom"><span class="price">R$ '+i[3].toFixed(2).replace('.',',')+'</span><button class="add">+</button></div>';c.onclick=()=>{qtd++;total+=i[3];document.getElementById('qty').textContent=qtd;document.getElementById('total').textContent='Total: R$ '+total.toFixed(2).replace('.',',')};menu.appendChild(c)});
+const acais=[['Açaí 300 ml','Até 3 complementos','🥣',16.90],['Açaí 500 ml','Até 5 complementos','🫐',22.90],['Açaí 700 ml','Até 7 complementos','💜',28.90]];
+const comps=['Banana','Morango','Leite condensado','Leite em pó','Granola','Paçoca','Confete','Coco ralado','Calda de chocolate','Nutella'];
+const acai=document.getElementById('acai');
+acais.forEach(i=>{const c=document.createElement('article');c.className='card';c.innerHTML='<div class="pic" style="background:#efe2f2">'+i[2]+'</div><h2>'+i[0]+'</h2><div class="desc">'+i[1]+'</div><div style="font-size:13px;color:#725d76;margin-top:8px">'+comps.join(' • ')+'</div><div class="bottom"><span class="price">R$ '+i[3].toFixed(2).replace('.',',')+'</span><button class="add">+</button></div>';c.onclick=()=>{qtd++;total+=i[3];document.getElementById('qty').textContent=qtd;document.getElementById('total').textContent='Total: R$ '+total.toFixed(2).replace('.',',')};acai.appendChild(c)});
 </script></body></html>

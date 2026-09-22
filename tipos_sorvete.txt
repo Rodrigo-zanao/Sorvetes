@@ -1,0 +1,7 @@
+# Tabela de tipos de sorvete
+# Formato: CODIGO|DESCRICAO|QTD_SABORES|PRECO
+# Os valores abaixo sao iniciais/ficticios e podem ser ajustados diretamente neste arquivo.
+TIP001|Casquinha|1|9.90
+TIP002|Cascao|2|14.90
+TIP003|Milkshake|1|16.90
+TIP004|Banana Split|3|22.90

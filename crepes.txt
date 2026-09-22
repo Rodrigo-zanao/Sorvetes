@@ -1,0 +1,12 @@
+# Tabela de sabores de crepe
+# Formato: CODIGO|DESCRICAO|PRECO
+CRE001|Queijo|9.90
+CRE002|Queijo com Presunto|9.90
+CRE003|Queijo com Calabresa|9.90
+CRE004|Queijo com Goiabada|9.90
+CRE005|Frango com Catupiry|12.90
+CRE006|Carne Seca com Queijo|14.90
+CRE007|Chocolate|10.90
+CRE008|Chocolate com Banana|11.90
+CRE009|Doce de Leite|10.90
+CRE010|Romeu e Julieta|11.90

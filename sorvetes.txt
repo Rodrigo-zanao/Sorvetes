@@ -1,0 +1,22 @@
+# Tabela de sabores de sorvete
+# Formato: CODIGO|DESCRICAO|PRECO
+SOR001|Chocolate|12.90
+SOR002|Morango|11.90
+SOR003|Baunilha|10.90
+SOR004|Pistache|15.90
+SOR005|Doce de Leite|13.90
+SOR006|Flocos|12.90
+SOR007|Maracuja|11.90
+SOR008|Coco|11.90
+SOR009|Napolitano|12.90
+SOR010|Creme|10.90
+SOR011|Milho Verde|11.90
+SOR012|Limao|10.90
+SOR013|Uva|10.90
+SOR014|Chocolate Branco|13.90
+SOR015|Sensacao|13.90
+SOR016|Menta com Chocolate|13.90
+SOR017|Cafe|12.90
+SOR018|Amendoim|12.90
+SOR019|Abacaxi|11.90
+SOR020|Chiclete|11.90

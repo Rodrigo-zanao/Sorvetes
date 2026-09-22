@@ -1,0 +1,24 @@
+# Tabela de complementos do acai
+# Formato: CODIGO|DESCRICAO|PRECO
+# PRECO vazio = usa a regra padrao de adicionais.
+# Regra atual: 2 complementos gratis; do 3o em diante, R$ 3,00 por complemento sem preco proprio.
+ACA001|Banana|
+ACA002|Morango|
+ACA003|Leite condensado|
+ACA004|Leite em po|
+ACA005|Granola|
+ACA006|Pacoca|
+ACA007|Confete|
+ACA008|Coco ralado|
+ACA009|Calda de chocolate|
+ACA010|Nutella|5.00
+ACA011|Ovomaltine|4.00
+ACA012|Castanha|4.00
+ACA013|Amendoim|
+ACA014|Mel|
+ACA015|Calda de morango|
+ACA016|Kiwi|4.00
+ACA017|Manga|3.50
+ACA018|Bis|4.00
+ACA019|Oreo|4.00
+ACA020|Gotas de chocolate|3.50

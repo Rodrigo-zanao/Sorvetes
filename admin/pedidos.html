@@ -5,7 +5,7 @@ function adminSession(){try{return JSON.parse(localStorage.getItem(ADMIN_STORE)|
 async function adminGuard(){const s=adminSession();if(!s?.access_token){location.replace('login.html');return null}const r=await fetch(ADMIN_SB+'/auth/v1/user',{headers:{apikey:ADMIN_KEY,Authorization:'Bearer '+s.access_token}});if(!r.ok){localStorage.removeItem(ADMIN_STORE);location.replace('login.html');return null}return s}
 async function sairAdmin(){const s=adminSession();if(s?.access_token)await fetch(ADMIN_SB+'/auth/v1/logout',{method:'POST',headers:{apikey:ADMIN_KEY,Authorization:'Bearer '+s.access_token}}).catch(()=>{});localStorage.removeItem(ADMIN_STORE);location.replace('login.html')}
 </script></head><body>
-<div class="top"><div class="brand">🍦 Cardápio <span>Admin</span></div><div class="dev"><b>ADMIN 03 • PEDIDOS</b>DEV 25/09/2026 13:54</div></div>
+<div class="top"><div class="brand">🍦 Cardápio <span>Admin</span></div><div class="dev"><b>ADMIN 03 • PEDIDOS</b>DEV 25/09/2026 14:30</div></div>
 <main class="wrap"><a class="back" href="index.html">← Painel</a><section class="hero"><h1>🧾 Pedidos</h1><p>Pedidos recebidos pelo atendimento.</p></section>
 <div class="toolbar"><button class="btn" onclick="carregar()">↻ Atualizar pedidos</button></div><div id="status" class="status">Carregando...</div><div id="cards" class="cards"></div></main>
 <script>
@@ -32,14 +32,14 @@ async function carregar(){
 async function mudarStatus(id,novo){
  if(!confirm('Alterar o pedido para '+novo+'?'))return;
  try{
-  let r=await fetch(SB+'/rest/v1/pedidos?id=eq.'+id,{method:'PATCH',headers:{apikey:KEY,Authorization:'Bearer '+KEY,'Content-Type':'application/json',Prefer:'return=minimal'},body:JSON.stringify({status:novo})});
+  let r=await fetch(SB+'/rest/v1/pedidos?id=eq.'+id,{method:'PATCH',headers:{apikey:KEY,Authorization:'Bearer '+adminSession().access_token,'Content-Type':'application/json',Prefer:'return=minimal'},body:JSON.stringify({status:novo})});
   if(!r.ok)throw new Error(await r.text()); await carregar();
  }catch(e){alert('Não foi possível alterar o status. '+e.message)}
 }
 async function concluir(id){
  if(!confirm('Marcar este pedido como CONCLUÍDO? Ele sairá desta lista.'))return;
  try{
-  let r=await fetch(SB+'/rest/v1/pedidos?id=eq.'+id,{method:'PATCH',headers:{apikey:KEY,Authorization:'Bearer '+KEY,'Content-Type':'application/json',Prefer:'return=minimal'},body:JSON.stringify({status:'CONCLUIDO'})});
+  let r=await fetch(SB+'/rest/v1/pedidos?id=eq.'+id,{method:'PATCH',headers:{apikey:KEY,Authorization:'Bearer '+adminSession().access_token,'Content-Type':'application/json',Prefer:'return=minimal'},body:JSON.stringify({status:'CONCLUIDO'})});
   if(!r.ok)throw new Error(await r.text()); await carregar();
  }catch(e){alert('Não foi possível concluir o pedido. '+e.message)}
 }

@@ -1,0 +1,14 @@
+# Tabela de bebidas
+# Formato: CODIGO|DESCRICAO|PRECO
+BEB001|Água mineral 500 ml|4.00
+BEB002|Água com gás 500 ml|5.00
+BEB003|Coca-Cola 200 ml|4.00
+BEB004|Coca-Cola lata 350 ml|6.00
+BEB005|Coca-Cola Zero lata 350 ml|6.00
+BEB006|Guaraná Antarctica lata 350 ml|6.00
+BEB007|Fanta Laranja lata 350 ml|6.00
+BEB008|Sprite lata 350 ml|6.00
+BEB009|Suco de laranja 300 ml|7.00
+BEB010|Suco de uva 300 ml|7.00
+BEB011|Chá gelado 300 ml|6.00
+BEB012|Energético lata|12.00

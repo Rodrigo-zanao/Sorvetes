@@ -1,6 +1,6 @@
 <!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Pedidos - Administração</title>
 <style>*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:#fff8f4;color:#3d2b2b}.top{background:#fff;padding:16px 22px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 14px #0001;position:sticky;top:0;z-index:5}.brand{font-weight:900;font-size:22px}.brand span{color:#7c3aed}.dev{font-size:11px;text-align:right;color:#766}.dev b{display:block;color:#7c3aed}.wrap{max-width:1150px;margin:auto;padding:28px 18px}.hero{background:linear-gradient(135deg,#6d28d9,#a855f7);color:#fff;border-radius:24px;padding:28px;margin:18px 0 22px}.hero h1{margin:0 0 8px;font-size:30px}.back{color:#6d28d9;text-decoration:none;font-weight:bold}.toolbar{display:flex;gap:10px;flex-wrap:wrap;margin:18px 0}.btn{border:0;border-radius:12px;padding:11px 16px;background:#6d28d9;color:#fff;font-weight:bold;cursor:pointer}.status{padding:12px;border-radius:12px;background:#fff;margin-bottom:14px;border:1px solid #eadfea}.cards{display:grid;gap:15px}.pedido{background:#fff;border:1px solid #eadfea;border-radius:18px;padding:18px;box-shadow:0 6px 18px #0000000c}.head{display:flex;justify-content:space-between;gap:15px;align-items:start;border-bottom:1px solid #eee;padding-bottom:12px}.numero{font-size:21px;font-weight:900}.data{color:#776;font-size:13px;margin-top:4px}.tag{display:inline-block;padding:6px 10px;border-radius:999px;background:#f3e8ff;color:#6d28d9;font-size:12px;font-weight:900}.item{display:grid;grid-template-columns:1fr auto;gap:12px;padding:11px 0;border-bottom:1px dashed #eee}.item:last-child{border-bottom:0}.item small{display:block;color:#776;margin-top:4px}.total{display:flex;justify-content:space-between;font-size:19px;font-weight:900;padding-top:13px}.empty{text-align:center;padding:40px;background:#fff;border-radius:18px}.erro{background:#ffe5e5;color:#8a2222}@media(max-width:600px){.brand{font-size:18px}.hero h1{font-size:25px}.dev{font-size:9px}}</style></head><body>
-<div class="top"><div class="brand">🍦 Cardápio <span>Admin</span></div><div class="dev"><b>ADMIN 03 • PEDIDOS</b>DEV 24/09/2026 23:24</div></div>
+<div class="top"><div class="brand">🍦 Cardápio <span>Admin</span></div><div class="dev"><b>ADMIN 03 • PEDIDOS</b>DEV 25/09/2026 13:54</div></div>
 <main class="wrap"><a class="back" href="index.html">← Painel</a><section class="hero"><h1>🧾 Pedidos</h1><p>Pedidos recebidos pelo atendimento.</p></section>
 <div class="toolbar"><button class="btn" onclick="carregar()">↻ Atualizar pedidos</button></div><div id="status" class="status">Carregando...</div><div id="cards" class="cards"></div></main>
 <script>
@@ -11,18 +11,32 @@ async function get(path){let r=await fetch(SB+'/rest/v1/'+path,{headers:{apikey:
 async function carregar(){
  status.className='status';status.textContent='Carregando pedidos...';cards.innerHTML='';
  try{
-  let pedidos=await get('pedidos?select=id,numero,data_hora,status,status_pagamento,total,observacao&order=id.desc&limit=100');
+  let pedidos=await get('pedidos?select=id,numero,data_hora,status,status_pagamento,total,observacao&status=neq.CONCLUIDO&order=id.asc&limit=100');
   if(!pedidos.length){status.textContent='Nenhum pedido encontrado.';cards.innerHTML='<div class="empty">Ainda não há pedidos para mostrar.</div>';return}
   let ids=pedidos.map(x=>x.id).join(',');
   let itens=await get('pedido_itens?select=id,pedido_id,categoria,nome,quantidade,valor_unitario,valor_adicionais,valor_total,talher,consumo,observacao&pedido_id=in.('+ids+')&order=id');
   status.textContent=pedidos.length+' pedido(s) encontrado(s).';
   cards.innerHTML=pedidos.map(p=>{
    let pi=itens.filter(i=>i.pedido_id===p.id);
-   return '<article class="pedido"><div class="head"><div><div class="numero">PEDIDO Nº '+esc(p.numero)+'</div><div class="data">'+new Date(p.data_hora).toLocaleString('pt-BR')+' • ID '+p.id+'</div></div><div><span class="tag">'+esc(p.status||'NOVO')+'</span></div></div>'+
+   return '<article class="pedido"><div class="head"><div><div class="numero">PEDIDO Nº '+esc(p.numero)+'</div><div class="data">'+new Date(p.data_hora).toLocaleString('pt-BR')+' • ID '+p.id+'</div></div><div><span class="tag">'+esc(p.status||'NOVO')+'</span><div style="margin-top:9px;display:flex;gap:7px;flex-wrap:wrap"><button class="btn work" onclick="mudarStatus('+p.id+',\'PREPARANDO\')">👨‍🍳 Preparando</button><button class="btn done" onclick="concluir('+p.id+')">✓ Concluído</button></div></div></div>'+
    (pi.length?pi.map(i=>'<div class="item"><div><b>'+esc(i.nome)+'</b><small>'+esc(i.categoria)+(i.talher?' • Talher: '+esc(i.talher):'')+(i.consumo?' • '+esc(i.consumo):'')+(i.observacao?'<br>'+esc(i.observacao):'')+'</small></div><b>'+money(i.valor_total)+'</b></div>').join(''):'<div class="item"><small>Sem itens disponíveis para leitura.</small></div>')+
    '<div class="total"><span>TOTAL</span><span>'+money(p.total)+'</span></div></article>'
   }).join('');
  }catch(e){console.error(e);status.className='status erro';status.textContent='Não foi possível carregar os pedidos: '+e.message;cards.innerHTML=''}
 }
-carregar();setInterval(carregar,15000);
+async function mudarStatus(id,novo){
+ if(!confirm('Alterar o pedido para '+novo+'?'))return;
+ try{
+  let r=await fetch(SB+'/rest/v1/pedidos?id=eq.'+id,{method:'PATCH',headers:{apikey:KEY,Authorization:'Bearer '+KEY,'Content-Type':'application/json',Prefer:'return=minimal'},body:JSON.stringify({status:novo})});
+  if(!r.ok)throw new Error(await r.text()); await carregar();
+ }catch(e){alert('Não foi possível alterar o status. '+e.message)}
+}
+async function concluir(id){
+ if(!confirm('Marcar este pedido como CONCLUÍDO? Ele sairá desta lista.'))return;
+ try{
+  let r=await fetch(SB+'/rest/v1/pedidos?id=eq.'+id,{method:'PATCH',headers:{apikey:KEY,Authorization:'Bearer '+KEY,'Content-Type':'application/json',Prefer:'return=minimal'},body:JSON.stringify({status:'CONCLUIDO'})});
+  if(!r.ok)throw new Error(await r.text()); await carregar();
+ }catch(e){alert('Não foi possível concluir o pedido. '+e.message)}
+}
+carregar();
 </script></body></html>

@@ -31,14 +31,20 @@ async function finalizarNoBanco(){
  if(!confirm('Finalizar este pedido?'))return;
  btn.disabled=true;btn.textContent='Enviando...';
  try{
-  const produtos=await sbGet('produtos?select=id,nome,codigo&ativo=eq.true');
+  const [produtos,saboresDb,compsDb]=await Promise.all([
+   sbGet('produtos?select=id,nome,codigo&ativo=eq.true'),
+   sbGet('sabores?select=id,codigo,nome&ativo=eq.true'),
+   sbGet('complementos?select=id,codigo,nome&ativo=eq.true')
+  ]);
   const norm=s=>String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim();
   const itens=p.map(x=>{
    let nome=norm(x.nome).replace(/^crepe\s+/,'');
    let prod=produtos.find(z=>norm(z.nome)===nome);
    if(!prod && x.categoria==='Açaí')prod=produtos.find(z=>norm(z.nome)===norm(x.nome));
    if(!prod)throw new Error('Produto não encontrado no banco: '+x.nome);
-   return {produto_id:prod.id,talher:x.talher||'',consumo:x.consumo||'',observacao:x.detalhes||'',sabores:[],complementos:[]};
+   let sab=(x.sabores||[]).map(s=>{let z=saboresDb.find(a=>(s.codigo&&a.codigo===s.codigo)||norm(a.nome)===norm(s.nome));return z?z.id:null}).filter(Boolean);
+   let com=(x.complementos||[]).map(s=>{let z=compsDb.find(a=>(s.codigo&&a.codigo===s.codigo)||norm(a.nome)===norm(s.nome));return z?z.id:null}).filter(Boolean);
+   return {produto_id:prod.id,talher:x.talher||'',consumo:x.consumo||'',observacao:x.detalhes||'',sabores:sab,complementos:com};
   });
   const agora=new Date(),numero=numeroPedido(agora);
   const r=await fetch(SUPABASE_URL+'/rest/v1/rpc/finalizar_pedido',{

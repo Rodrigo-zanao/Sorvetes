@@ -1,9 +1,26 @@
-<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Login - Cardápio Admin</title><style>*{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;font-family:Arial,sans-serif;background:linear-gradient(135deg,#fff8f4,#f3e8ff);color:#3d2b2b}.box{width:min(420px,92vw);background:#fff;border:1px solid #eadfea;border-radius:24px;padding:28px;box-shadow:0 18px 55px #0002}.logo{text-align:center;font-size:27px;font-weight:900;margin-bottom:22px}.logo span{color:#7c3aed}label{display:block;font-weight:bold;margin:12px 0 6px}input{width:100%;padding:13px;border:1px solid #ddd;border-radius:12px;font-size:16px}.btn{width:100%;margin-top:18px;border:0;border-radius:12px;padding:13px;background:#6d28d9;color:#fff;font-weight:900;font-size:16px;cursor:pointer}.status{margin-top:14px;padding:11px;border-radius:10px;background:#f5f5f5;display:none}.dev{text-align:center;color:#877;font-size:10px;margin-top:18px}</style></head><body><main class="box"><div class="logo">🍦 Cardápio <span>Admin</span></div><form id="form"><label>E-mail</label><input id="email" type="email" autocomplete="username" required><label>Senha</label><input id="senha" type="password" autocomplete="current-password" required><button class="btn" id="entrar">Entrar</button></form><div id="status" class="status"></div><div class="dev">ADMIN LOGIN • DEV 25/09/2026 14:12</div></main><script>
-const SB='https://eaqdwplkxuxtipxljutd.supabase.co',KEY='sb_publishable_UOjScs_n5p7yKN8HLRx_2A_hxxAjAid';
-const STORE='sorvetes_admin_session';
-function save(s){localStorage.setItem(STORE,JSON.stringify(s))}
-function load(){try{return JSON.parse(localStorage.getItem(STORE)||'null')}catch{return null}}
-async function validar(s){if(!s?.access_token)return false;let r=await fetch(SB+'/auth/v1/user',{headers:{apikey:KEY,Authorization:'Bearer '+s.access_token}});return r.ok}
-(async()=>{let s=load();if(await validar(s))location.replace('index.html')})();
-document.getElementById('form').onsubmit=async e=>{e.preventDefault();document.getElementById('entrar').disabled=true;document.getElementById('status').style.display='block';document.getElementById('status').textContent='Entrando...';try{let r=await fetch(SB+'/auth/v1/token?grant_type=password',{method:'POST',headers:{apikey:KEY,'Content-Type':'application/json'},body:JSON.stringify({email:document.getElementById('email').value.trim(),password:document.getElementById('senha').value})});let j=await r.json();if(!r.ok)throw new Error(j.msg||j.error_description||'Login inválido');save(j);location.replace('index.html')}catch(e){document.getElementById('status').textContent='⚠ '+e.message;document.getElementById('entrar').disabled=false}};
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Login - Cardápio Admin</title><style>*{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;font-family:Arial,sans-serif;background:linear-gradient(135deg,#fff8f4,#f3e8ff);color:#3d2b2b}.box{width:min(420px,92vw);background:#fff;border:1px solid #eadfea;border-radius:24px;padding:28px;box-shadow:0 18px 55px #0002}.logo{text-align:center;font-size:27px;font-weight:900;margin-bottom:22px}.logo span{color:#7c3aed}label{display:block;font-weight:bold;margin:12px 0 6px}input{width:100%;padding:13px;border:1px solid #ddd;border-radius:12px;font-size:16px}.btn{width:100%;margin-top:18px;border:0;border-radius:12px;padding:13px;background:#6d28d9;color:#fff;font-weight:900;font-size:16px;cursor:pointer}.status{margin-top:14px;padding:11px;border-radius:10px;background:#f5f5f5;display:none}.dev{text-align:center;color:#877;font-size:10px;margin-top:18px}</style></head><body><main class="box"><div class="logo">🍦 Cardápio <span>Admin</span></div><form id="form"><label>E-mail</label><input id="email" type="email" autocomplete="username" required><label>Senha</label><input id="senha" type="password" autocomplete="current-password" required><button class="btn" id="entrar" type="button" onclick="fazerLogin()">Entrar</button></form><div id="status" class="status"></div><div class="dev">ADMIN LOGIN • DEV 25/09/2026 14:20</div></main><script>
+var SB='https://eaqdwplkxuxtipxljutd.supabase.co';
+var KEY='sb_publishable_UOjScs_n5p7yKN8HLRx_2A_hxxAjAid';
+var STORE='sorvetes_admin_session';
+function fazerLogin(){
+ var btn=document.getElementById('entrar'), st=document.getElementById('status');
+ var em=document.getElementById('email').value.trim(), pw=document.getElementById('senha').value;
+ st.style.display='block';
+ if(!em||!pw){st.textContent='⚠ Informe e-mail e senha.';return}
+ btn.disabled=true;st.textContent='Conectando ao Supabase...';
+ fetch(SB+'/auth/v1/token?grant_type=password',{
+  method:'POST',
+  headers:{'apikey':KEY,'Content-Type':'application/json'},
+  body:JSON.stringify({email:em,password:pw})
+ }).then(function(r){return r.text().then(function(t){return {ok:r.ok,status:r.status,text:t}})})
+ .then(function(x){
+   var j={};try{j=JSON.parse(x.text)}catch(e){}
+   if(!x.ok)throw new Error(j.msg||j.error_description||j.message||('Erro '+x.status));
+   if(!j.access_token)throw new Error('Sessão não retornada pelo Supabase.');
+   localStorage.setItem(STORE,JSON.stringify(j));
+   st.textContent='✓ Login realizado. Abrindo painel...';
+   window.location.href='index.html';
+ }).catch(function(err){st.textContent='⚠ '+err.message;btn.disabled=false});
+}
+document.getElementById('senha').addEventListener('keydown',function(e){if(e.key==='Enter')fazerLogin()});
 </script></body></html>

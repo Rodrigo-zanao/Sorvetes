@@ -7,7 +7,7 @@ async function sairAdmin(){const s=adminSession();if(s?.access_token)await fetch
 </script></head><body>
 <div class="top"><div class="brand">🍦 Cardápio <span>Admin</span></div><div class="dev"><b>ADMIN 03 • PEDIDOS</b>DEV 25/09/2026 21:22</div></div>
 <main class="wrap"><a class="back" href="index.html">← Painel</a><section class="hero"><h1>🧾 Pedidos</h1><p>Pedidos em atendimento. Atualização automática a cada 10 segundos.</p></section>
-<div class="toolbar"><button class="btn" onclick="carregar()">↻ Atualizar agora</button><span class="tag">🔄 Automático: 10 segundos</span></div><div id="status" class="status">Carregando...</div><div id="cards" class="cards"></div></main>
+<div class="toolbar"><button class="btn" onclick="carregar()">↻ Atualizar agora</button><label class="tag" style="cursor:pointer"><input id="autoRefresh" type="checkbox" checked onchange="alternarAuto()"> 🔄 Atualizar automaticamente a cada 10 segundos</label></div><div id="status" class="status">Carregando...</div><div id="cards" class="cards"></div></main>
 <script>
 const SB=ADMIN_SB,KEY=ADMIN_KEY;
 const money=v=>'R$ '+Number(v||0).toFixed(2).replace('.',',');
@@ -43,5 +43,9 @@ async function concluir(id){
   if(!r.ok)throw new Error(await r.text()); await carregar();
  }catch(e){alert('Não foi possível concluir o pedido. '+e.message)}
 }
-let atualizando=false;async function atualizarAutomatico(){if(atualizando)return;atualizando=true;try{await carregar()}finally{atualizando=false}}adminGuard().then(s=>{if(s){atualizarAutomatico();setInterval(atualizarAutomatico,10000)}});
+let atualizando=false,autoTimer=null;
+async function atualizarAutomatico(){if(atualizando)return;atualizando=true;try{await carregar()}finally{atualizando=false}}
+function alternarAuto(){let ligado=document.getElementById('autoRefresh').checked;localStorage.setItem('admin03_auto',ligado?'1':'0');if(autoTimer){clearInterval(autoTimer);autoTimer=null}if(ligado)autoTimer=setInterval(atualizarAutomatico,10000)}
+adminGuard().then(s=>{if(s){let salvo=localStorage.getItem('admin03_auto');autoRefresh.checked=salvo===null?true:salvo==='1';atualizarAutomatico();alternarAuto()}});
+
 </script></body></html>
